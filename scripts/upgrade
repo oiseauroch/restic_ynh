@@ -152,6 +152,14 @@ systemctl start ${app}_check_read_data.timer
 ynh_script_progression --message="End of upgrade process" --last
 
 #=================================================
+# SETUP LOGROTATE
+#=================================================
+ynh_use_logorate --logfile=/var/log/restic_backup_${app}.log
+ynh_use_logorate --logfile=/var/log/restic_backup_${app}.err
+ynh_use_logorate --logfile=/var/log/restic_check_${app}.log
+ynh_use_logorate --logfile=/var/log/restic_check_${app}.err
+
+#=================================================
 # UPGRADE SSH CONFIG
 #=================================================
 

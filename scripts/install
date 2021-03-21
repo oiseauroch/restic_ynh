@@ -107,6 +107,14 @@ ynh_script_progression --message="Set permissions on ${final_path}"
 chown -R ${app}: ${final_path}
 
 #=================================================
+# SETUP LOGROTATE
+#=================================================
+ynh_use_logorate --logfile=/var/log/restic_backup_${app}.log
+ynh_use_logorate --logfile=/var/log/restic_backup_${app}.err
+ynh_use_logorate --logfile=/var/log/restic_check_${app}.log
+ynh_use_logorate --logfile=/var/log/restic_check_${app}.err
+
+#=================================================
 # GENERATE SSH KEY
 #=================================================
 ynh_script_progression --message="Generating private key"
