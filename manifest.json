@@ -8,6 +8,12 @@
   },
   "version": "0.12.0~ynh9",
   "url": "https://restic.net/",
+    "upstream": {
+        "license": "BSD-2-Clause",
+        "website": "https://restic.net",
+        "admindoc": "https://restic.readthedocs.io/en/latest/",
+        "code": "https://github.com/restic/restic"
+    },
   "license": "BSD-2-Clause",
   "maintainer": {
     "name": "Lionel Coupouchetty-Ramouchetty",
@@ -15,7 +21,7 @@
     "url": "https://gnoobix.net"
   },
   "requirements": {
-    "yunohost": ">= 3.6.5.3"
+        "yunohost": ">= 4.3.0"
   },
   "multi_instance": true,
   "services": [],

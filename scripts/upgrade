@@ -12,8 +12,10 @@ source /usr/share/yunohost/helpers
 #=================================================
 # LOAD SETTINGS
 #=================================================
+ynh_script_progression --message="Loading installation settings..."
 
 export app=$YNH_APP_INSTANCE_NAME
+
 export final_path="/opt/yunohost/${app}"
 export server=$(ynh_app_setting_get $app server)
 export port=$(ynh_app_setting_get $app port)
@@ -30,18 +32,22 @@ export allow_extra_space_use=$(ynh_app_setting_get $app allow_extra_space_use)
 
 
 #=================================================
-# CHECK IF AN UPGRADE IS NEEDED
+# CHECK VERSION
 #=================================================
-ynh_check_app_version_changed
+ynh_script_progression --message="Checking version..."
+
+upgrade_type=$(ynh_check_app_version_changed)
 
 #=================================================
 # BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
 #=================================================
+ynh_script_progression --message="Backing up the app before upgrading (may take a while)..."
 
 # Backup the current version of the app
 ynh_backup_before_upgrade
 ynh_clean_setup () {
-	# restore it if the upgrade fails
+	ynh_clean_check_starting
+	# Restore it if the upgrade fails
 	ynh_restore_upgradebackup
 }
 # Exit if an error occurs during the execution of the script
@@ -150,15 +156,6 @@ systemctl start ${app}_check.timer
 systemctl start ${app}_check_read_data.timer
 
 #=================================================
-# SETUP LOGROTATE
-#=================================================
-ynh_script_progression --message="Configuring logrotate"
-ynh_use_logrotate --logfile=/var/log/restic_backup_${app}.log
-ynh_use_logrotate --logfile=/var/log/restic_backup_${app}.err
-ynh_use_logrotate --logfile=/var/log/restic_check_${app}.log
-ynh_use_logrotate --logfile=/var/log/restic_check_${app}.err
-
-#=================================================
 # UPGRADE SSH CONFIG
 #=================================================
 
@@ -185,4 +182,20 @@ Host ${server}
 # end $app ssh config
 EOCONF
 fi
-ynh_script_progression --message="End of upgrade process" --last
+
+#=================================================
+# GENERIC FINALIZATION
+#=================================================
+# SETUP LOGROTATE
+#=================================================
+ynh_script_progression --message="Configuring logrotate"
+ynh_use_logrotate --logfile=/var/log/restic_backup_${app}.log
+ynh_use_logrotate --logfile=/var/log/restic_backup_${app}.err
+ynh_use_logrotate --logfile=/var/log/restic_check_${app}.log
+ynh_use_logrotate --logfile=/var/log/restic_check_${app}.err
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+
+ynh_script_progression --message="Upgrade of $app completed"
